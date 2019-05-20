@@ -38,7 +38,9 @@ def storeData(url, rating, variance, id_num):
 	print('County: ' + county)
 
 	# Retrieve category
-	category = soup(itemprop="keywords")[0].getText()
+	category = soup(itemprop="keywords") or ''
+	if category != '':
+		category = category[0].getText()
 	print("Category: " + category)
 
 	# Retrieve image
@@ -61,7 +63,7 @@ csvfile = open('scenery.csv', 'a', encoding='utf-8')
 filewriter = csv.writer(csvfile, lineterminator = '\n')
 
 # Checkpoint starts the program loop starting with that id number
-checkpoint_id = 10518
+checkpoint_id = 46427
 
 # Store all urls and ratings
 if checkpoint_id == -1:
@@ -77,7 +79,17 @@ with open('./votes.tsv', 'r') as fp:
 				variance = data[3]
 				url = data[6]
 
-				storeData(url, rating, variance, id_num)
+				maxRetries = 5
+				for tries in range(maxRetries):
+					try:
+						storeData(url, rating, variance, id_num)
+						break
+					except:
+						print("Failed")
+						if tries == 4:
+							print("Failed at id=" + id_num)
+							raise SystemExit
+						pass
 				print()
 
 fp.close()
