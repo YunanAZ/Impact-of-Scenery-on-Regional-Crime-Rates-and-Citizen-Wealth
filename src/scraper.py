@@ -2,6 +2,7 @@ import requests
 import bs4
 from bs4 import BeautifulSoup
 import csv
+import pandas as pd
 
 def storeData(url, rating, variance, id_num):
 	page = requests.get(url)
@@ -63,7 +64,11 @@ csvfile = open('scenery.csv', 'a', encoding='utf-8')
 filewriter = csv.writer(csvfile, lineterminator = '\n')
 
 # Checkpoint starts the program loop starting with that id number
-checkpoint_id = 46427
+df = pd.read_csv('scenery.csv', encoding='ISO-8859-1')
+if len(df) == 0:
+	checkpoint_id = -1
+else:
+	checkpoint_id = df['ID'][len(df['ID']) - 1] + 1
 
 # Store all urls and ratings
 if checkpoint_id == -1:
@@ -78,18 +83,7 @@ with open('./votes.tsv', 'r') as fp:
 				rating = data[4]
 				variance = data[3]
 				url = data[6]
-
-				maxRetries = 5
-				for tries in range(maxRetries):
-					try:
-						storeData(url, rating, variance, id_num)
-						break
-					except:
-						print("Failed")
-						if tries == 4:
-							print("Failed at id=" + id_num)
-							raise SystemExit
-						pass
+				storeData(url, rating, variance, id_num)
 				print()
 
 fp.close()
