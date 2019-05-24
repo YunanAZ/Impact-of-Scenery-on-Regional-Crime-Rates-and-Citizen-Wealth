@@ -12,7 +12,7 @@ def storeData(url, rating, variance, id_num):
 	header = soup(id="maincontent")[0].find('h2').getText()
 	if header == "Sorry, page not found":
 		print("Skipping id=" + id_num)
-		return 
+		return
 
 	# Include ID
 	print('ID: ' + str(id_num))
@@ -68,7 +68,8 @@ df = pd.read_csv('scenery.csv', encoding='ISO-8859-1')
 if len(df) == 0:
 	checkpoint_id = -1
 else:
-	checkpoint_id = df['ID'][len(df['ID']) - 1] + 1
+	#checkpoint_id = df['ID'][len(df['ID']) - 1] + 1
+        checkpoint_id = 217675
 
 # Store all urls and ratings
 if checkpoint_id == -1:
